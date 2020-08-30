@@ -9,6 +9,7 @@ local headingArrow = 0
 local farmedZone = 0
 local smoking = false
 local times = 0
+local fumigatorJob = nil
 
 local aircraftBlip = AddBlipForCoord(Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y)
 SetBlipSprite(aircraftBlip, 582)
@@ -30,9 +31,6 @@ end)
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
 	PlayerData = xPlayer
-	if ESX.PlayerData.job.name == "fumigador" then
-		work = true
-	end
 end)
 
 RegisterNetEvent('esx:setJob')
@@ -42,11 +40,22 @@ end)
 
 CreateThread(function()
 	while true do
+		Citizen.Wait(1000)
+		ESX.TriggerServerCallback('esx_gonifumigadoras:receiveJob', function(xJob)
+			fumigatorJob = xJob
+		end)
+	end
+end)
+
+CreateThread(function()
+	while true do
 		Citizen.Wait(0)
-		DrawMarker(33, Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y, Config.Zones.takeAircraft.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 0, 255, 0, 80, false, true, 2, nil, nil, false)
-		DrawMarker(23, Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y, Config.Zones.takeAircraft.z-0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 3.0, 2.0, 0, 255, 0, 80, false, true, 2, nil, nil, false)
-		DrawMarker(33, Config.Zones.leaveAircraft.x, Config.Zones.leaveAircraft.y, Config.Zones.leaveAircraft.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 255, 0, 0, 80, false, true, 2, nil, nil, false)
-		DrawMarker(23, Config.Zones.leaveAircraft.x, Config.Zones.leaveAircraft.y, Config.Zones.leaveAircraft.z-0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 3.0, 2.0, 255, 0, 0, 80, false, true, 2, nil, nil, false)
+		if fumigatorJob == "fumigador" then
+			DrawMarker(33, Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y, Config.Zones.takeAircraft.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 0, 255, 0, 80, false, true, 2, nil, nil, false)
+			DrawMarker(23, Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y, Config.Zones.takeAircraft.z-0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 3.0, 2.0, 0, 255, 0, 80, false, true, 2, nil, nil, false)
+			DrawMarker(33, Config.Zones.leaveAircraft.x, Config.Zones.leaveAircraft.y, Config.Zones.leaveAircraft.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 255, 0, 0, 80, false, true, 2, nil, nil, false)
+			DrawMarker(23, Config.Zones.leaveAircraft.x, Config.Zones.leaveAircraft.y, Config.Zones.leaveAircraft.z-0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 3.0, 2.0, 255, 0, 0, 80, false, true, 2, nil, nil, false)
+		end
 	end
 end)
 
@@ -75,13 +84,15 @@ end)
 CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		generateWaypoint()
-		makeArrowHeadPoint()
-		playerTakingJob()
-		startingJob()
-		arrivedJobPoint()
-		leavingJob()
-		getPayed()
+		if fumigatorJob == "fumigador" then
+			generateWaypoint()
+			makeArrowHeadPoint()
+			playerTakingJob()
+			startingJob()
+			arrivedJobPoint()
+			leavingJob()
+			getPayed()
+		end
 	end
 end)
 

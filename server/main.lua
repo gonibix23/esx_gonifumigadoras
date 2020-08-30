@@ -19,3 +19,9 @@ AddEventHandler('esx_gonifumigadoras:receivePlaneCost', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
 	xPlayer.addAccountMoney('bank', 5000)
 end)
+
+ESX.RegisterServerCallback('esx_gonifumigadoras:receiveJob', function(source, cb)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local xJob = xPlayer.getJob().name
+    cb(xJob)
+end)
