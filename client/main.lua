@@ -76,7 +76,6 @@ CreateThread(function()
 			RemoveParticleFxInRange(GetEntityCoords(PlayerPedId(-1)).x, GetEntityCoords(PlayerPedId(-1)).y, GetEntityCoords(PlayerPedId(-1)).z, 10000)
 			smoking = false
 			times = 0
-			print("borradas")
 		end
 	end
 end)
@@ -86,12 +85,12 @@ CreateThread(function()
 		Citizen.Wait(0)
 		if fumigatorJob == "fumigador" then
 			generateWaypoint()
-			makeArrowHeadPoint()
 			playerTakingJob()
 			startingJob()
 			arrivedJobPoint()
 			leavingJob()
 			getPayed()
+			makeArrowHeadPoint()
 		end
 	end
 end)
@@ -106,37 +105,40 @@ end)
 function generateWaypoint()
 	if waypoint == true then
 		local randomZone = math.random(1, 6)
-		if randomZone == 1 then
-			waypointPosition.x = Config.FarmZones.a.x
-			waypointPosition.y = Config.FarmZones.a.y
-			waypointPosition.z = Config.FarmZones.a.z
+		if lastNum ~= randomZone then
+			if randomZone == 1 then
+				waypointPosition.x = Config.FarmZones.a.x
+				waypointPosition.y = Config.FarmZones.a.y
+				waypointPosition.z = Config.FarmZones.a.z
+			end
+			if randomZone == 2 then
+				waypointPosition.x = Config.FarmZones.b.x
+				waypointPosition.y = Config.FarmZones.b.y
+				waypointPosition.z = Config.FarmZones.b.z
+			end
+			if randomZone == 3 then
+				waypointPosition.x = Config.FarmZones.c.x
+				waypointPosition.y = Config.FarmZones.c.y
+				waypointPosition.z = Config.FarmZones.c.z
+			end
+			if randomZone == 4 then
+				waypointPosition.x = Config.FarmZones.d.x
+				waypointPosition.y = Config.FarmZones.d.y
+				waypointPosition.z = Config.FarmZones.d.z
+			end
+			if randomZone == 5 then
+				waypointPosition.x = Config.FarmZones.e.x
+				waypointPosition.y = Config.FarmZones.e.y
+				waypointPosition.z = Config.FarmZones.e.z
+			end
+			if randomZone == 6 then
+				waypointPosition.x = Config.FarmZones.f.x
+				waypointPosition.y = Config.FarmZones.f.y
+				waypointPosition.z = Config.FarmZones.f.z
+			end
+			lastNum = randomZone
+			waypoint = false
 		end
-		if randomZone == 2 then
-			waypointPosition.x = Config.FarmZones.b.x
-			waypointPosition.y = Config.FarmZones.b.y
-			waypointPosition.z = Config.FarmZones.b.z
-		end
-		if randomZone == 3 then
-			waypointPosition.x = Config.FarmZones.c.x
-			waypointPosition.y = Config.FarmZones.c.y
-			waypointPosition.z = Config.FarmZones.c.z
-		end
-		if randomZone == 4 then
-			waypointPosition.x = Config.FarmZones.d.x
-			waypointPosition.y = Config.FarmZones.d.y
-			waypointPosition.z = Config.FarmZones.d.z
-		end
-		if randomZone == 5 then
-			waypointPosition.x = Config.FarmZones.e.x
-			waypointPosition.y = Config.FarmZones.e.y
-			waypointPosition.z = Config.FarmZones.e.z
-		end
-		if randomZone == 6 then
-			waypointPosition.x = Config.FarmZones.f.x
-			waypointPosition.y = Config.FarmZones.f.y
-			waypointPosition.z = Config.FarmZones.f.z
-		end
-		waypoint = false
 	end
 end
 
@@ -170,7 +172,9 @@ end
 function startingJob()
 	if aircraftSpawned == true then
 		DrawMarker(2, GetEntityCoords(PlayerPedId(-1)).x, GetEntityCoords(PlayerPedId(-1)).y, GetEntityCoords(PlayerPedId(-1)).z+1, 0.0, 0.0, 0.0, headingArrow-90, -90.0, 90.0, 1.0, 2.0, 2.0, 255, 0, 0, 80, false, false, 2, false, nil, false)
-		DrawMarker(6, waypointPosition.x+0.1, waypointPosition.y+0.1, waypointPosition.z+0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 1.0, 50.0, 255, 255, 0, 80, false, true, 2, nil, nil, false)
+		if farmedZone < 5 then
+			DrawMarker(6, waypointPosition.x+0.1, waypointPosition.y+0.1, waypointPosition.z+0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 1.0, 50.0, 255, 255, 0, 80, false, true, 2, nil, nil, false)
+		end
 	end
 end
 
@@ -210,20 +214,34 @@ end
 
 function arrivedJobPoint()
 	if aircraftSpawned == true then
-		if GetDistanceBetweenCoords(waypointPosition.x+0.1, waypointPosition.y+0.1, waypointPosition.z+0.1, GetEntityCoords(PlayerPedId(-1)).x, GetEntityCoords(PlayerPedId(-1)).y, GetEntityCoords(PlayerPedId(-1)).z, true) < 30 then
-			waypoint = true
+		if GetDistanceBetweenCoords(waypointPosition.x+0.1, waypointPosition.y+0.1, waypointPosition.z+0.1, GetEntityCoords(PlayerPedId(-1)).x, GetEntityCoords(PlayerPedId(-1)).y, GetEntityCoords(PlayerPedId(-1)).z, true) < 30 and farmedZone < 5 then
 			farmedZone = farmedZone + 1
 			ESX.ShowHelpNotification('~g~Has fumigado una zona, ¡Bien hecho! ~g~'..farmedZone..'~g~/5~g~' )
 			smoking = true
+			if farmedZone < 5 then
+				waypoint = true
+			end
+			Citizen.Wait(1000)
 		end
 	end
 end
 
 function getPayed()
 	if farmedZone == 5 then
-		ESX.ShowNotification('~g~Has cobrado por fumigar 5 zonas, ¡Bien hecho!~g~')
-		farmedZone = 0
-		TriggerServerEvent('esx_gonifumigadoras:getPayedForWork')
+		ESX.ShowNotification('~g~Has fumigado 5 zonas, ¡Bien hecho! Vuelve al hangar para cobrar~g~')
+		waypointPosition.x = Config.Zones.getPayedZone.x
+		waypointPosition.y = Config.Zones.getPayedZone.y
+		DrawMarker(33, Config.Zones.getPayedZone.x, Config.Zones.getPayedZone.y, Config.Zones.getPayedZone.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 0, 0, 255, 80, false, true, 2, nil, nil, false)
+		DrawMarker(23, Config.Zones.getPayedZone.x, Config.Zones.getPayedZone.y, Config.Zones.getPayedZone.z-0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 3.0, 2.0, 0, 0, 255, 80, false, true, 2, nil, nil, false)
+		if GetDistanceBetweenCoords(Config.Zones.getPayedZone.x, Config.Zones.getPayedZone.y, Config.Zones.getPayedZone.z, GetEntityCoords(PlayerPedId(-1)).x, GetEntityCoords(PlayerPedId(-1)).y, GetEntityCoords(PlayerPedId(-1)).z, true) < 4 then
+			ESX.ShowHelpNotification('~b~Presiona ~INPUT_CONTEXT~ para cobrar~b~')
+			if IsControlJustPressed(0, 54) then
+				farmedZone = 0
+				waypoint = true
+				TriggerServerEvent('esx_gonifumigadoras:getPayedForWork')
+				ESX.ShowHelpNotification('~b~Has cobrado~b~ ~g~2000$~g~ ~b~por trabajar~b~')
+			end
+		end
 	end
 end
 

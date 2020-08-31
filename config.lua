@@ -1,7 +1,7 @@
 Config = {}
 
 Config.Zones = {
-	takeJob = {x = 1733.9, y = 3300.52, z = 41.22},
+	getPayedZone = {x = 1705.76, y = 3250.24, z = 41.01},
     takeAircraft = {x = 1733.9, y = 3300.52, z = 41.22},
     leaveAircraft = {x = 1743.9, y = 3264.52, z = 41.26},
     aircraftSpawn = {x = 1710.1, y = 3257.81, z = 41.06}
