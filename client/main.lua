@@ -1,6 +1,5 @@
 ESX = nil
 local PlayerData = {}
-local work = false
 local aircraftSpawned = false
 local aircraft = nil
 local waypoint = true
@@ -158,7 +157,7 @@ function playerTakingJob()
 					TaskWarpPedIntoVehicle(PlayerPedId(-1), aircraft, -1)
 					SetEntityAsMissionEntity(aircraft, true, true)
 					aircraftSpawned = true
-					ESX.ShowHelpNotification('~b~Se te han cobrado~b~ ~r~5000$~r~ ~b~de fianza~b~')
+					ESX.ShowHelpNotification('~b~Se te han cobrado~b~ ~r~'..Config.AircraftCost..'$~r~ ~b~de fianza~b~')
 					ESX.ShowNotification('~b~No te bajes del vehiculo si no quieres perder el trabajo~b~')
 					ESX.ShowNotification('~b~Vete a la posición marcada para fumigar~b~')
 					TriggerServerEvent('esx_gonifumigadoras:planeCost')
@@ -186,7 +185,7 @@ function leavingJob()
 					DeleteVehicle(aircraft)
 					aircraftSpawned = false
 					ESX.ShowNotification('~b~Has dejado de trabajar de ~w~Fumigador~w~')
-					ESX.ShowHelpNotification('~b~Has cobrado~b~ ~g~5000$~g~ ~b~de la fianza~b~')
+					ESX.ShowHelpNotification('~b~Has cobrado~b~ ~g~'..Config.AircraftCost..'$~g~ ~b~de la fianza~b~')
 					TriggerServerEvent('esx_gonifumigadoras:receivePlaneCost')
 					waypoint = true
 				end
@@ -196,17 +195,19 @@ end
 
 function destroyPlane()
 	if aircraftSpawned == true then
-		if IsPedInVehicle(PlayerPedId(-1), aircraft, true) == false then
+		if IsPedInVehicle(PlayerPedId(-1), aircraft, true) == false and aircraftSpawned == true then
 			Citizen.Wait(10000)
 			if IsPedInVehicle(PlayerPedId(-1), aircraft, true) == false and aircraftSpawned == true then
 				Citizen.Wait(10000)
-				DeleteVehicle(aircraft)
-				if aircraftSpawned == true then
-				ESX.ShowHelpNotification('~r~Has fallado en tu trabajo vuelve a intentarlo~r~')
+				if IsPedInVehicle(PlayerPedId(-1), aircraft, true) == false and aircraftSpawned == true then
+					DeleteVehicle(aircraft)
+					if aircraftSpawned == true then
+					ESX.ShowHelpNotification('~r~Has fallado en tu trabajo vuelve a intentarlo~r~')
+					end
+					aircraftSpawned = false
+					farmedZone = 0
+					waypoint = true
 				end
-				aircraftSpawned = false
-				farmedZone = 0
-				waypoint = true
 			end
 		end
 	end

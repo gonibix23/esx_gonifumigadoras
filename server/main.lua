@@ -11,9 +11,7 @@ end)
 RegisterServerEvent('esx_gonifumigadoras:planeCost')
 AddEventHandler('esx_gonifumigadoras:planeCost', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer.getAccount('bank').money >= Config.AircraftCost then
-		xPlayer.removeAccountMoney('bank', Config.AircraftCost)
-	end
+	xPlayer.removeAccountMoney('bank', Config.AircraftCost)
 end)
 
 RegisterServerEvent('esx_gonifumigadoras:receivePlaneCost')
