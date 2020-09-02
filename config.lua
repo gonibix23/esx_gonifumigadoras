@@ -15,3 +15,6 @@ Config.FarmZones = {
     e = {x = 27.28, y = 1533.39, z = 480.17},
     f = {x = 2087.58, y = -2123.26, z = 340.12}
 }
+
+Config.MoneyPay = 1000
+Config.AircraftCost = 3000
