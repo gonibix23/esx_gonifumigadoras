@@ -8,7 +8,7 @@ local headingArrow = 0
 local farmedZone = 0
 local smoking = false
 local times = 0
-local fumigatorJob = nil
+local PlayerData = {}
 
 local aircraftBlip = AddBlipForCoord(Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y)
 SetBlipSprite(aircraftBlip, 582)
@@ -25,6 +25,7 @@ Citizen.CreateThread(function()
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 		Citizen.Wait(0)
 	end
+	PlayerData = ESX.GetPlayerData()
 end)
 
 RegisterNetEvent('esx:playerLoaded')
@@ -39,17 +40,8 @@ end)
 
 CreateThread(function()
 	while true do
-		Citizen.Wait(1000)
-		ESX.TriggerServerCallback('esx_gonifumigadoras:receiveJob', function(xJob)
-			fumigatorJob = xJob
-		end)
-	end
-end)
-
-CreateThread(function()
-	while true do
 		Citizen.Wait(0)
-		if fumigatorJob == "fumigador" then
+		if ESX.GetPlayerData().job.name == "fumigador" then
 			DrawMarker(33, Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y, Config.Zones.takeAircraft.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 0, 255, 0, 80, false, true, 2, nil, nil, false)
 			DrawMarker(23, Config.Zones.takeAircraft.x, Config.Zones.takeAircraft.y, Config.Zones.takeAircraft.z-0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 3.0, 2.0, 0, 255, 0, 80, false, true, 2, nil, nil, false)
 			DrawMarker(33, Config.Zones.leaveAircraft.x, Config.Zones.leaveAircraft.y, Config.Zones.leaveAircraft.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 255, 0, 0, 80, false, true, 2, nil, nil, false)
@@ -82,7 +74,7 @@ end)
 CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		if fumigatorJob == "fumigador" then
+		if ESX.GetPlayerData().job.name == "fumigador" then
 			generateWaypoint()
 			playerTakingJob()
 			startingJob()
